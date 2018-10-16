@@ -59,9 +59,9 @@ is true then so is (P ∧ Q) ∧ R. Written
 in inference rule form, this would say 
 the following:
 
-{ P Q R: Prop }, p_qr : P ∧ (Q ∧ R)
----------------------------------- ∧.assoc_1
-          pq_r : (P ∧ Q) ∧ R
+{ P Q R: Prop }, pqr_left : P ∧ (Q ∧ R)
+---------------------------------- ∧.assoc'
+          pqr_right : (P ∧ Q) ∧ R
 
 Proving that this is a valid rule 
 can be done by defining a function, 
