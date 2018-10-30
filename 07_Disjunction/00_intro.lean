@@ -331,3 +331,47 @@ Exercise: Prove that false is also a
 *left* identity for disjunction. That
 is: false ∨ P ↔ P (false is on the left).
 -/
+
+theorem aDemorganLaw : 
+    ∀ P Q: Prop, ¬ P ∧ ¬ Q ↔ ¬ (P ∨ Q) :=
+begin
+    assume P Q: Prop,
+    apply iff.intro,
+
+    --forward
+    begin
+      assume npnq : P ∧ ¬ Q,
+      show ¬ (P ∨ Q),
+      from
+        begin
+          assume pq : (P ∨ Q),
+          cases pq with p q,
+
+          show false,
+          from npnq.1 p,
+
+          show false,
+          from npnq.2 q,
+
+        end,
+    
+     --backwards 
+    assume p : P,
+
+    
+    begin
+      have pq : P ∨ Q,
+      from
+        begin
+          apply or.intro_left,
+          show P,
+          from p
+        end,
+      
+      show false,
+      from 
+      
+
+
+
+end

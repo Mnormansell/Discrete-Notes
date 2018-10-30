@@ -182,12 +182,48 @@ begin
                 show false,
                 from npnq.2 q,
             end,
+        
         --left side
+        -- to get a proof of ¬ P ∧ ¬ Q we need 
+        -- both ¬ P and ¬ Q and then use and.intro
+        -- Show a contratradiction by first assuming
+        -- P and Q are true, then show they must be 
+        -- false, then use and.intro
+        assume nporq : ¬ (P ∨ Q),
 
-        assume nporq : (P ∨ Q) → false,
-        show ¬ P ∧ ¬ Q,
+        have np : ¬ P,
         from
             begin
+            assume p : P,
 
-            end, 
+            have porq : P ∨ Q,
+            from
+                begin
+                apply or.intro_left,
+                show P,
+                from p,
+                end,
+            
+            show false,
+            from nporq porq,
+            end,
+        
+        have nq : ¬ Q,
+        from
+            begin
+            assume q : Q,
+
+            have porq : P ∨ Q,
+            from
+                begin
+                apply or.intro_right,
+                show Q,
+                from q,
+                end,
+            
+            show false,
+            from nporq porq,
+            end,
+        
+        exact and.intro np nq         
 end
