@@ -1,10 +1,9 @@
+
 /-
-THIS ASSIGNMENT IS DUE BEFORE 9AM 
-ON TUESDAY NEXT WEEK, BEFORE THE 
-DAY'S 2101 CLASSES BEGIN. WE WILL 
-REVIEW THE ANSWERS IN CLASS. THEN 
-WE WILL GIVE An IN-CLASS, GRADED 
-EXERCISE TO TEST YOUR UNDERSTANDING.
+THIS ASSIGNMENT IS DUE BEFORE NEXT CLASS.
+WE WILL THEN REVIEW IT IN CLASS. FOLLOWING
+THAT REVIEW WE WILL GIVE A BRIEF IN-CLASS,
+GRADED EXERCISE TO TEST YOUR UNDERSTANDING.
 
 This file comes in two parts. The first
 part presents an example that you are to
@@ -167,21 +166,40 @@ Prove, ∀ P Q: Prop, ¬ P ∧ ¬ Q ↔ ¬ (P ∨ Q)
 theorem aDemorganLaw : 
     ∀ P Q: Prop, ¬ P ∧ ¬ Q ↔ ¬ (P ∨ Q) :=
 begin
-    assume P Q: Prop,
-    apply iff.intro,
-        --right side
-        assume npnq : ¬ P ∧ ¬ Q,
-        show ¬ (P ∨ Q),
+
+    assume P Q : Prop,
+    apply iff.intro, 
+    -- forward
+    assume npnq : ¬ P ∧ ¬ Q,
+    show ¬ (P ∨ Q),
+    from
+        begin
+            assume pq : (P ∨ Q),
+            cases pq with p q, 
+
+            show false,
+            from npnq.1 p, 
+
+            show false,
+            from npnq.2 q,
+        end,
+
+    --backwards
+    assume nporq : ¬ (P ∨ Q),
+    --show not p
+    have np : ¬ P,
+    from
+        begin
+        assume p : P, 
+
+        have  pq : (P ∨ Q),
         from
             begin
-            assume pq : P ∨ Q,
-            cases pq with p q,
-                show false, 
-                from npnq.1 p,
-
-                show false,
-                from npnq.2 q,
+            apply or.intro_left,
+            show P,
+            from p,
             end,
+<<<<<<< HEAD
         
         --left side
         -- to get a proof of ¬ P ∧ ¬ Q we need 
@@ -226,4 +244,28 @@ begin
             end,
         
         exact and.intro np nq         
+=======
+
+        show false,
+        from nporq pq,
+        end,
+    --show not
+    have nq : ¬ Q,
+    from
+        begin
+        assume q : Q,
+
+        have pq : (P ∨ Q),
+        from
+            begin
+            apply or.intro_right,
+            show Q,
+            from q,
+            end,
+        
+        show false,
+        from nporq pq,
+        end,
+
+>>>>>>> 7bf877fc487881e7123ecc6a6cc372d320cd5eed
 end

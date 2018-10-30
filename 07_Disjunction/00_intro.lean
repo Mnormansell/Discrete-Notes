@@ -89,11 +89,11 @@ There is no proof of the right side.
 -/
 
 theorem goodSide : 0 = 0 ∨ 0 = 1 :=
-  or.intro_left (0 = 1) rfl 
+   or.intro_left (0=1) (eq.refl 0)
   ---------------- Q ---pfP
 
 /-
-Recacall that we can use "example" in
+Recall that we can use "example" in
 Lean to state a theorem without giving 
 its proof a name. 
 
@@ -113,6 +113,9 @@ example : false ∨ Q :=
 /-
 EXERCISE: Prove 0 = 1 ∨ 0 = 0. 
 -/
+
+theorem xyz : 0 = 1 ∨ 0 = 0 :=
+  or.intro_right (0 = 1) rfl
 
 /-
 Here's a proof that P or true 
@@ -140,7 +143,7 @@ always true as well.
 
 /-
 The or.elim rule gives us an indirect way
-to prove a proposition, W, (the goal) by 
+to prove a proposition, R, (the goal) by 
 showing first that at least one of two 
 conditions holds (P ∨ Q), and in either 
 case W must be true, because both (P → R)
@@ -155,14 +158,15 @@ pfPQ: P ∨ Q, pfPR: P → R, pfQR: Q → R
 
 -/
 
-/-As an example, suppose that (1) when it 
+/-
+As an example, suppose that (1) when it 
 is raining (R) the grass is wet (R → W); (2)
 when the sprinkler (S) is on, the grass 
 is also wet (S → W); and it is raining *or* 
 the sprinkler is on (R ∨ S). Then the grass 
 must be wet (W).
 
-Going in the other dirction, if our aim
+Going in the other direction, if our aim
 is to prove W, we can do it using or.elim
 by showing that for some propositions, R 
 and S, that R ∨ S is true, and that *in 
@@ -229,39 +233,47 @@ theorem wet : Wet :=
 
 /-
 The following program make the arguments to
-and the result typof or.elim clear, and it 
+and the result of or.elim clear, and it 
 gives an example of the use of or.elim.
 -/
 theorem orElim : 
   ∀ R S W: Prop, 
-    (R ∨ S) → (R → W) → (S → W) 
-    → W 
+    (R ∨ S) → (R → W) → (S → W) → W 
 :=
 begin
-  assume R S W pfRorS r2w s2w, 
+  assume R S W rors r2w s2w, 
   show W,
-  from or.elim pfRorS r2w s2w
+  from or.elim rors r2w s2w
 end
 
+/-
+This example constructs the same
+proof but illustrates how we can
+apply inference rules, leaving out
+some arguments, to be filled in, in
+the style of backward reasoning.
+-/
 theorem orElim' : 
   ∀ R S W: Prop, 
     (R ∨ S) → (R → W) → (S → W) → W :=
 begin
-  assume R S W pfRorS r2w s2w, 
+  assume R S W rors r2w s2w, 
   -- apply or.elim
-  apply or.elim pfRorS,
-  -- this does backward chaining
-  -- reducing goal to two subgoals
+  apply or.elim rors,
+  -- reduce goal to two subgoals
   -- one for each required implication 
-    -- R → W
     exact r2w,
-    -- S → W
     exact s2w
 end
 
 /-
 Notice the subtle difference between using
-or.elim and cases:
+or.elim and cases. The or.elim rule takes
+the disjunction and the two implications as
+arguments. The cases tactic, on the other
+hand, sets you up to apply one or the other
+implication depending on the case being
+considered.
 -/
 theorem wet''' : 
   ∀ R S W: Prop, 
@@ -275,7 +287,6 @@ begin
   -/
   show W, from 
     begin
-
     /- 
     What we need to show is that W follows
     from R ∨ S, whether because R is true and
@@ -293,6 +304,15 @@ begin
     -- QED 
 end
 
+/-
+We recommend approaching proofs from
+disjunctions, as here, using the cases
+tactic. It clearly shows that what is
+happening is a case analysis. That if
+the disjunction is true, then one way
+or another we can reach the desired
+conclusion.
+-/
 
 /-
 Here's a proof that false is a right
@@ -324,6 +344,23 @@ theorem id_right_or :
       -- Reverse direction, easy
       apply or.intro_left
   end
+
+
+
+/-
+Another example. The proof of another
+standard rule of reasoning in natural 
+deduction.
+-/
+theorem disjunctiveSyllogism :
+  ∀ P Q : Prop, P ∨ Q → ¬Q → P :=
+  λ p q pq nq,
+    begin
+      cases pq with p q,
+      assumption,
+      show p,
+      from false.elim (nq q),    
+    end
 
 
 /-
@@ -370,8 +407,6 @@ begin
       
       show false,
       from 
-      
-
-
+    
 
 end
